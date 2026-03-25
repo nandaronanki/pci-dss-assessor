@@ -1,1130 +1,529 @@
-// PCI DSS v4.0.1 Requirements Data Model
-// Each requirement has sub-requirements with assessment questions, hints, and dependency info
+// PCI DSS v2.0 ROC Reporting Instructions - Requirement 1
+// Install and maintain a firewall configuration to protect cardholder data
 
 export const STATUS = {
-  NOT_STARTED: 'not_started',
+  NOT_ASSESSED: 'not_assessed',
   IN_PLACE: 'in_place',
-  IN_PLACE_WITH_CCW: 'in_place_ccw',
-  NOT_APPLICABLE: 'not_applicable',
   NOT_IN_PLACE: 'not_in_place',
+  NOT_APPLICABLE: 'not_applicable',
+  IN_PROGRESS: 'in_progress'
 };
 
 export const STATUS_LABELS = {
-  [STATUS.NOT_STARTED]: 'Not Assessed',
+  [STATUS.NOT_ASSESSED]: 'Not Assessed',
   [STATUS.IN_PLACE]: 'In Place',
-  [STATUS.IN_PLACE_WITH_CCW]: 'In Place (CCW)',
-  [STATUS.NOT_APPLICABLE]: 'Not Applicable',
   [STATUS.NOT_IN_PLACE]: 'Not In Place',
+  [STATUS.NOT_APPLICABLE]: 'N/A',
+  [STATUS.IN_PROGRESS]: 'In Progress'
 };
 
 export const STATUS_COLORS = {
-  [STATUS.NOT_STARTED]: { bg: 'bg-gray-100', text: 'text-gray-500', border: 'border-gray-300', dot: 'bg-gray-400' },
-  [STATUS.IN_PLACE]: { bg: 'bg-emerald-50', text: 'text-emerald-700', border: 'border-emerald-400', dot: 'bg-emerald-500' },
-  [STATUS.IN_PLACE_WITH_CCW]: { bg: 'bg-blue-50', text: 'text-blue-700', border: 'border-blue-400', dot: 'bg-blue-500' },
-  [STATUS.NOT_APPLICABLE]: { bg: 'bg-slate-50', text: 'text-slate-500', border: 'border-slate-300', dot: 'bg-slate-400' },
-  [STATUS.NOT_IN_PLACE]: { bg: 'bg-red-50', text: 'text-red-700', border: 'border-red-400', dot: 'bg-red-500' },
+  [STATUS.NOT_ASSESSED]: 'bg-gray-100 text-gray-600 border-gray-300',
+  [STATUS.IN_PLACE]: 'bg-emerald-50 text-emerald-700 border-emerald-300',
+  [STATUS.NOT_IN_PLACE]: 'bg-red-50 text-red-700 border-red-300',
+  [STATUS.NOT_APPLICABLE]: 'bg-slate-50 text-slate-600 border-slate-300',
+  [STATUS.IN_PROGRESS]: 'bg-amber-50 text-amber-700 border-amber-300'
 };
 
-export const GOAL_AREAS = [
-  { id: 'network', name: 'Build & Maintain a Secure Network', icon: 'Shield', reqs: [1, 2] },
-  { id: 'data', name: 'Protect Account Data', icon: 'Lock', reqs: [3, 4] },
-  { id: 'vuln', name: 'Vulnerability Management', icon: 'Bug', reqs: [5, 6] },
-  { id: 'access', name: 'Strong Access Control', icon: 'Key', reqs: [7, 8, 9] },
-  { id: 'monitor', name: 'Monitor & Test Networks', icon: 'Eye', reqs: [10, 11] },
-  { id: 'policy', name: 'Information Security Policy', icon: 'FileText', reqs: [12] },
+export const METHODOLOGY = {
+  OBSERVE: 'Observe system settings/configurations',
+  DOCUMENT: 'Document reviews',
+  INTERVIEW: 'Interviews with personnel',
+  PROCESS: 'Observe process/action/state',
+  SAMPLE: 'Identify sample'
+};
+
+export const REQUIREMENT_SECTIONS = [
+  {
+    id: 'req1',
+    number: '1',
+    title: 'Install and maintain a firewall configuration to protect cardholder data',
+    subsections: [
+      {
+        id: 'req1.1',
+        number: '1.1',
+        title: 'Establish firewall and router configuration standards',
+        description: 'Establish firewall and router configuration standards that include the following:'
+      },
+      {
+        id: 'req1.2',
+        number: '1.2',
+        title: 'Build firewall and router configurations that restrict connections',
+        description: 'Build firewall and router configurations that restrict connections between untrusted networks and any system components in the cardholder data environment. Note: An "untrusted network" is any network that is external to the networks belonging to the entity under review, and/or which is out of the entity\'s ability to control or manage.'
+      },
+      {
+        id: 'req1.3',
+        number: '1.3',
+        title: 'Prohibit direct public access between the Internet and any system component in the cardholder data environment',
+        description: 'Prohibit direct public access between the Internet and any system component in the cardholder data environment.'
+      },
+      {
+        id: 'req1.4',
+        number: '1.4',
+        title: 'Install personal firewall software on mobile/employee-owned computers',
+        description: 'Install personal firewall software on any mobile and/or employee-owned computers with direct connectivity to the Internet which are used to access the organization\'s network.'
+      }
+    ]
+  }
 ];
 
 export const requirements = [
+  // 1.1 - Parent requirement (header only)
   {
-    id: 1,
-    title: 'Network Security Controls',
-    shortTitle: 'Network Security',
-    description: 'Install and maintain network security controls to protect the cardholder data environment.',
-    goalArea: 'network',
-    items: [
-      {
-        id: '1.1.1',
-        title: 'Policies and procedures for Req 1 are documented and maintained',
-        hint: 'Ensure you have formal, written policies covering all aspects of network security controls. These should be reviewed at least annually.',
-        testingMethods: ['Examine'],
-        newlyMandatory: false,
-        dependencies: [],
-      },
-      {
-        id: '1.1.2',
-        title: 'Roles and responsibilities for Req 1 are documented, assigned, and understood',
-        hint: 'Document who is responsible for firewall management, rule reviews, and network security. Interview personnel to confirm understanding.',
-        testingMethods: ['Examine', 'Interview'],
-        newlyMandatory: false,
-        dependencies: [],
-      },
-      {
-        id: '1.2.1',
-        title: 'NSC configuration standards are defined, implemented, and maintained',
-        hint: 'Configuration standards should include rulesets for each NSC type, approval process for changes, and a diagram of all connections.',
-        testingMethods: ['Examine'],
-        newlyMandatory: false,
-        dependencies: ['6.5.1'],
-      },
-      {
-        id: '1.2.2',
-        title: 'All changes to NSC configurations are approved and managed per change control at 6.5.1',
-        hint: 'Cross-reference with Requirement 6.5.1 \u2014 every firewall rule change must go through formal change control with business justification, approval, and testing.',
-        testingMethods: ['Examine'],
-        newlyMandatory: false,
-        dependencies: ['6.5.1'],
-      },
-      {
-        id: '1.2.3',
-        title: 'Accurate network diagram(s) maintained showing all connections to/from CDE',
-        hint: 'Diagrams must show all data flows, network segments, and connections between systems. These form the foundation for PCI DSS scoping.',
-        testingMethods: ['Examine'],
-        newlyMandatory: false,
-        dependencies: ['12.5.2'],
-      },
-      {
-        id: '1.2.4',
-        title: 'Accurate data-flow diagram(s) maintained for all account data flows',
-        hint: 'Data-flow diagrams are critical for scoping and are referenced by Req 12.5.2 and Appendix A3. Show where PAN enters, flows through, and exits.',
-        testingMethods: ['Examine'],
-        newlyMandatory: false,
-        dependencies: ['12.5.2', 'A3.2.1'],
-      },
-      {
-        id: '1.2.5',
-        title: 'All services, protocols, and ports allowed are identified and approved',
-        hint: 'Maintain an inventory of all allowed services/ports with business justification. Insecure services must have additional security features documented.',
-        testingMethods: ['Examine'],
-        newlyMandatory: false,
-        dependencies: [],
-      },
-      {
-        id: '1.2.6',
-        title: 'Security features defined for insecure services, protocols, and ports',
-        hint: 'For any insecure protocol still in use, document the business need and additional security measures (e.g., VPN tunnels, encryption).',
-        testingMethods: ['Examine'],
-        newlyMandatory: false,
-        dependencies: [],
-      },
-      {
-        id: '1.2.7',
-        title: 'NSC configurations reviewed at least every six months',
-        hint: 'Schedule biannual reviews of all firewall and router configurations. Document findings and remediation of any identified issues.',
-        testingMethods: ['Examine', 'Interview'],
-        newlyMandatory: false,
-        dependencies: [],
-      },
-      {
-        id: '1.3.1',
-        title: 'Inbound traffic to the CDE is restricted to only what is necessary',
-        hint: 'Default deny for all inbound traffic. Only explicitly allowed connections should be permitted, with documented business justification.',
-        testingMethods: ['Examine', 'Observe'],
-        newlyMandatory: false,
-        dependencies: [],
-      },
-      {
-        id: '1.3.2',
-        title: 'Outbound traffic from the CDE is restricted to only what is necessary',
-        hint: 'Default deny for outbound traffic from CDE. Restrict to known, necessary destinations only.',
-        testingMethods: ['Examine', 'Observe'],
-        newlyMandatory: false,
-        dependencies: [],
-      },
-      {
-        id: '1.3.3',
-        title: 'NSCs installed between wireless networks and the CDE',
-        hint: 'All wireless networks must be separated from the CDE by a firewall, regardless of whether they carry cardholder data. Default deny from wireless to CDE.',
-        testingMethods: ['Examine', 'Observe'],
-        newlyMandatory: false,
-        dependencies: [],
-      },
-      {
-        id: '1.4.1',
-        title: 'NSCs implemented between trusted and untrusted networks',
-        hint: 'DMZ architecture or equivalent controls must be in place. Internet-facing systems should not directly access the CDE.',
-        testingMethods: ['Examine', 'Observe'],
-        newlyMandatory: false,
-        dependencies: [],
-      },
-      {
-        id: '1.4.2',
-        title: 'Inbound traffic from untrusted networks to trusted networks is restricted',
-        hint: 'Restrict traffic to system components that provide authorized publicly accessible services. Limit connections to DMZ only.',
-        testingMethods: ['Examine'],
-        newlyMandatory: false,
-        dependencies: [],
-      },
-      {
-        id: '1.5.1',
-        title: 'Security controls on computing devices connecting via untrusted networks',
-        hint: 'Personal firewalls or equivalent must be active on all portable devices that connect to both untrusted networks and the CDE.',
-        testingMethods: ['Examine', 'Observe'],
-        newlyMandatory: false,
-        dependencies: [],
-      },
-    ],
+    id: 'req1.1',
+    section: '1.1',
+    requirement: 'Establish firewall and router configuration standards that include the following:',
+    testingProcedure: 'Obtain and inspect the firewall and router configuration standards and other documentation specified below to verify that standards are complete. Complete the following:',
+    isParent: true,
+    parentSection: '1.1',
+    rocDetails: [],
+    methodology: [],
+    tags: ['firewall', 'router', 'configuration', 'standards']
   },
+
+  // 1.1.1
   {
-    id: 2,
-    title: 'Secure Configurations',
-    shortTitle: 'Secure Config',
-    description: 'Apply secure configurations to all system components to reduce vulnerabilities.',
-    goalArea: 'network',
-    items: [
-      {
-        id: '2.1.1',
-        title: 'Policies and procedures for Req 2 are documented and maintained',
-        hint: 'Document standards for system hardening including vendor defaults, unnecessary services, and configuration management.',
-        testingMethods: ['Examine'],
-        newlyMandatory: false,
-        dependencies: [],
-      },
-      {
-        id: '2.1.2',
-        title: 'Roles and responsibilities for Req 2 are documented, assigned, and understood',
-        hint: 'Identify who is responsible for system hardening, configuration management, and maintaining the system inventory.',
-        testingMethods: ['Examine', 'Interview'],
-        newlyMandatory: false,
-        dependencies: [],
-      },
-      {
-        id: '2.2.1',
-        title: 'Configuration standards developed for all system components',
-        hint: 'Standards should address known vulnerabilities, disable unnecessary services/protocols, configure security parameters, and remove unnecessary functionality.',
-        testingMethods: ['Examine', 'Interview'],
-        newlyMandatory: false,
-        dependencies: ['6.5.1'],
-      },
-      {
-        id: '2.2.2',
-        title: 'Vendor default accounts managed (changed or disabled)',
-        hint: 'All default passwords must be changed before deployment. Default accounts not needed should be removed or disabled. This directly links to Req 8 authentication.',
-        testingMethods: ['Examine', 'Observe'],
-        newlyMandatory: false,
-        dependencies: ['8.2.2'],
-      },
-      {
-        id: '2.2.3',
-        title: 'Primary functions requiring different security levels on separate system components',
-        hint: 'Web servers, database servers, and DNS should not coexist on the same server where possible. Document exceptions with business justification.',
-        testingMethods: ['Examine', 'Observe'],
-        newlyMandatory: false,
-        dependencies: [],
-      },
-      {
-        id: '2.2.4',
-        title: 'Only necessary services, protocols, daemons, and functions enabled',
-        hint: 'Remove or disable all unnecessary services. Document and justify any services that are needed alongside the payment function.',
-        testingMethods: ['Examine', 'Observe'],
-        newlyMandatory: false,
-        dependencies: [],
-      },
-      {
-        id: '2.2.5',
-        title: 'Insecure services, daemons, or protocols: additional security features configured',
-        hint: 'For any insecure service still in use, implement and document additional security features (encryption, additional authentication).',
-        testingMethods: ['Examine'],
-        newlyMandatory: false,
-        dependencies: [],
-      },
-      {
-        id: '2.2.6',
-        title: 'System security parameters configured to prevent misuse',
-        hint: 'Review security parameter settings against industry benchmarks (CIS, vendor guides). Document deviations with justification.',
-        testingMethods: ['Examine'],
-        newlyMandatory: false,
-        dependencies: [],
-      },
-      {
-        id: '2.2.7',
-        title: 'All non-console administrative access encrypted with strong cryptography',
-        hint: 'SSH, TLS 1.2+, or equivalent must be used for all remote admin access. Telnet, unencrypted HTTP for admin are prohibited.',
-        testingMethods: ['Examine', 'Observe'],
-        newlyMandatory: false,
-        dependencies: ['4.2.1'],
-      },
-      {
-        id: '2.3.1',
-        title: 'Wireless environments: defaults changed at installation',
-        hint: 'Change all wireless vendor defaults: SSID, passwords, encryption keys, SNMP community strings. Use strong encryption (WPA3 preferred).',
-        testingMethods: ['Examine', 'Observe', 'Interview'],
-        newlyMandatory: false,
-        dependencies: [],
-      },
-      {
-        id: '2.3.2',
-        title: 'Wireless encryption keys changed when personnel with knowledge depart',
-        hint: 'Have a process to rotate wireless encryption keys when any employee with knowledge of the keys leaves the organization or changes roles.',
-        testingMethods: ['Examine', 'Interview'],
-        newlyMandatory: false,
-        dependencies: [],
-      },
+    id: 'req1.1.1',
+    section: '1.1.1',
+    requirement: 'A formal process for approving and testing all network connections and changes to the firewall and router configurations',
+    testingProcedure: 'Verify that there is a formal process for testing and approval of all network connections and changes to firewall and router configurations.',
+    isParent: false,
+    parentSection: '1.1',
+    rocDetails: [
+      'Identify the document(s) which defines the formal processes for: (i) Testing of all network connections, (ii) Approval of all network connections, (iii) Testing of all firewall configuration changes, (iv) Approval of all firewall configuration changes, (v) Testing of all router configuration changes, (vi) Approval of all router configuration changes',
+      'Describe how the documented processes were observed to be implemented, for: (i) Testing of all network connections, (ii) Approval of all network connections, (iii) Testing of all firewall configuration changes, (iv) Approval of all firewall configuration changes, (v) Testing of all router configuration changes, (vi) Approval of all router configuration changes'
     ],
+    methodology: ['DOCUMENT', 'PROCESS'],
+    tags: ['firewall', 'router', 'change management', 'approval', 'testing', 'network connections']
   },
+
+  // 1.1.2.a
   {
-    id: 3,
-    title: 'Protect Stored Account Data',
-    shortTitle: 'Stored Data',
-    description: 'Protect stored account data through encryption, masking, and retention controls.',
-    goalArea: 'data',
-    items: [
-      {
-        id: '3.1.1',
-        title: 'Policies and procedures for Req 3 are documented and maintained',
-        hint: 'Include data retention and disposal policies, encryption standards, and key management procedures.',
-        testingMethods: ['Examine'],
-        newlyMandatory: false,
-        dependencies: [],
-      },
-      {
-        id: '3.2.1',
-        title: 'Data retention and disposal policies limit storage amount and time',
-        hint: 'Define maximum retention periods for all account data. Implement automated processes to purge data that exceeds retention limits.',
-        testingMethods: ['Examine', 'Observe'],
-        newlyMandatory: false,
-        dependencies: ['1.2.4'],
-      },
-      {
-        id: '3.3.1',
-        title: 'SAD not retained after authorization (full track, CAV2, PIN/PIN block)',
-        hint: 'Sensitive authentication data must never be stored after authorization, even if encrypted. Verify across all storage locations identified in data flows.',
-        testingMethods: ['Examine', 'Observe'],
-        newlyMandatory: false,
-        dependencies: [],
-      },
-      {
-        id: '3.4.1',
-        title: 'PAN masked when displayed (first 6/last 4 maximum shown)',
-        hint: 'Only personnel with documented business need may see more than first 6/last 4 digits. Verify across all display outputs: screens, reports, receipts.',
-        testingMethods: ['Examine', 'Observe'],
-        newlyMandatory: false,
-        dependencies: [],
-      },
-      {
-        id: '3.5.1',
-        title: 'PAN rendered unreadable anywhere it is stored',
-        hint: 'Use one-way hashes, truncation, index tokens, or strong cryptography. If disk encryption is used, it must be separate from OS authentication.',
-        testingMethods: ['Examine', 'Observe'],
-        newlyMandatory: false,
-        dependencies: ['3.6.1', '3.7.1'],
-      },
-      {
-        id: '3.6.1',
-        title: 'Cryptographic key management processes defined and implemented',
-        hint: 'Document key generation, distribution, storage, rotation, and destruction processes. Keys must be stored securely with restricted access.',
-        testingMethods: ['Examine', 'Interview'],
-        newlyMandatory: false,
-        dependencies: ['12.3.4'],
-      },
-      {
-        id: '3.7.1',
-        title: 'Key management policies include generation of strong cryptographic keys',
-        hint: 'Use industry-accepted key generation methods. Reference NIST SP 800-133 for guidance. HSMs are recommended for key generation.',
-        testingMethods: ['Examine', 'Interview', 'Observe'],
-        newlyMandatory: false,
-        dependencies: [],
-      },
+    id: 'req1.1.2a',
+    section: '1.1.2.a',
+    requirement: 'Current network diagram with all connections to cardholder data, including any wireless networks',
+    testingProcedure: 'Verify that a current network diagram exists (for example, one that shows cardholder data flows over the network) and that it documents all connections to cardholder data, including any wireless networks.',
+    isParent: false,
+    parentSection: '1.1',
+    rocDetails: [
+      'Identify the current network diagram(s).',
+      'Describe how observed network connections confirm that the diagram: (i) Is current, (ii) Includes all connections to cardholder data, (iii) Includes any wireless network connections'
     ],
+    methodology: ['DOCUMENT', 'PROCESS'],
+    tags: ['network diagram', 'cardholder data', 'wireless', 'data flow']
   },
+
+  // 1.1.2.b
   {
-    id: 4,
-    title: 'Protect Data in Transit',
-    shortTitle: 'Data Transit',
-    description: 'Protect cardholder data with strong cryptography during transmission over open, public networks.',
-    goalArea: 'data',
-    items: [
-      {
-        id: '4.1.1',
-        title: 'Policies and procedures for Req 4 are documented and maintained',
-        hint: 'Document encryption standards for data in transit, approved protocols, and certificate management procedures.',
-        testingMethods: ['Examine'],
-        newlyMandatory: false,
-        dependencies: [],
-      },
-      {
-        id: '4.2.1',
-        title: 'Strong cryptography used when PAN transmitted over open, public networks',
-        hint: 'Use TLS 1.2 or higher. Verify certificates are valid, trusted, and not expired. Check all transmission channels including APIs and batch processes.',
-        testingMethods: ['Examine', 'Observe'],
-        newlyMandatory: false,
-        dependencies: ['3.6.1', 'A2'],
-      },
-      {
-        id: '4.2.1.1',
-        title: 'Trusted keys/certificates confirmed for PAN transmissions',
-        hint: 'Inventory all certificates used for PAN transmission. Verify they are from trusted CAs and have not expired. Monitor for certificate expiration.',
-        testingMethods: ['Examine'],
-        newlyMandatory: false,
-        dependencies: [],
-      },
-      {
-        id: '4.2.1.2',
-        title: 'Wireless networks transmitting PAN use strong cryptography',
-        hint: 'WPA3 or at minimum WPA2 with AES. Verify wireless encryption settings on all networks that carry or connect to the CDE.',
-        testingMethods: ['Examine', 'Observe'],
-        newlyMandatory: false,
-        dependencies: [],
-      },
-      {
-        id: '4.2.2',
-        title: 'PAN secured when sent via end-user messaging technologies',
-        hint: 'PAN must never be sent via unencrypted email, SMS, or instant messaging. If messaging is used, implement end-to-end encryption.',
-        testingMethods: ['Examine', 'Observe'],
-        newlyMandatory: false,
-        dependencies: [],
-      },
+    id: 'req1.1.2b',
+    section: '1.1.2.b',
+    requirement: 'Current network diagram is kept current',
+    testingProcedure: 'Verify that the diagram is kept current.',
+    isParent: false,
+    parentSection: '1.1',
+    rocDetails: [
+      'Identify the document requiring that the network diagram is kept current.',
+      'Describe the documented process for keeping the network diagram current.',
+      'Identify the responsible personnel interviewed who confirm the documented process is followed.'
     ],
+    methodology: ['DOCUMENT', 'INTERVIEW'],
+    tags: ['network diagram', 'documentation', 'maintenance']
   },
+
+  // 1.1.3.a
   {
-    id: 5,
-    title: 'Malware Protection',
-    shortTitle: 'Malware',
-    description: 'Protect all systems and networks from malicious software.',
-    goalArea: 'vuln',
-    items: [
-      {
-        id: '5.1.1',
-        title: 'Policies and procedures for Req 5 are documented and maintained',
-        hint: 'Include anti-malware deployment scope, update frequency, scan policies, and exception handling procedures.',
-        testingMethods: ['Examine'],
-        newlyMandatory: false,
-        dependencies: [],
-      },
-      {
-        id: '5.2.1',
-        title: 'Anti-malware deployed on all system components at risk',
-        hint: 'Deploy on all Windows systems, and evaluate Linux/Unix/macOS. Document the risk evaluation for any system type deemed not at risk.',
-        testingMethods: ['Examine', 'Observe'],
-        newlyMandatory: false,
-        dependencies: [],
-      },
-      {
-        id: '5.2.2',
-        title: 'Anti-malware solution detects all known types of malware',
-        hint: 'Solution must address viruses, trojans, worms, ransomware, spyware, rootkits, and zero-day threats where possible.',
-        testingMethods: ['Examine'],
-        newlyMandatory: false,
-        dependencies: [],
-      },
-      {
-        id: '5.2.3.1',
-        title: 'Periodic evaluations of components not at risk performed per targeted risk analysis',
-        hint: 'If any system component is deemed not at risk for malware, the frequency of re-evaluation must be set via targeted risk analysis per Req 12.3.1.',
-        testingMethods: ['Examine'],
-        newlyMandatory: true,
-        dependencies: ['12.3.1'],
-      },
-      {
-        id: '5.3.1',
-        title: 'Anti-malware solution kept current via automatic updates',
-        hint: 'Verify automatic signature updates are enabled and functioning. Check update logs for gaps or failures.',
-        testingMethods: ['Examine', 'Observe'],
-        newlyMandatory: false,
-        dependencies: [],
-      },
-      {
-        id: '5.3.2.1',
-        title: 'Periodic malware scan frequency defined via targeted risk analysis',
-        hint: 'If continuous real-time scanning is not used, the periodic scan frequency must be justified through targeted risk analysis per Req 12.3.1.',
-        testingMethods: ['Examine'],
-        newlyMandatory: true,
-        dependencies: ['12.3.1'],
-      },
-      {
-        id: '5.3.3',
-        title: 'Anti-malware scans on removable electronic media',
-        hint: 'Scan all removable media (USB, external drives) when inserted or connected. Consider also restricting USB port access.',
-        testingMethods: ['Examine', 'Observe'],
-        newlyMandatory: true,
-        dependencies: [],
-      },
-      {
-        id: '5.3.5',
-        title: 'Anti-malware mechanisms cannot be disabled without authorization',
-        hint: 'Users should not be able to disable anti-malware. Any temporary exception must be documented with time limit and management approval.',
-        testingMethods: ['Examine', 'Interview', 'Observe'],
-        newlyMandatory: false,
-        dependencies: [],
-      },
-      {
-        id: '5.4.1',
-        title: 'Mechanisms to detect and protect against phishing attacks',
-        hint: 'Implement technical controls such as email filtering, DMARC/DKIM/SPF, link scanning, and anti-phishing tools. This complements the awareness training in Req 12.6.3.1.',
-        testingMethods: ['Examine', 'Observe'],
-        newlyMandatory: true,
-        dependencies: ['12.6.3.1'],
-      },
+    id: 'req1.1.3a',
+    section: '1.1.3.a',
+    requirement: 'Requirements for a firewall at each Internet connection and between any DMZ and the internal network zone',
+    testingProcedure: 'Verify that firewall configuration standards include requirements for a firewall at each Internet connection and between any DMZ and the internal network zone.',
+    isParent: false,
+    parentSection: '1.1',
+    rocDetails: [
+      'Identify the firewall configuration standards that define requirements for: (i) A firewall at each Internet connection, (ii) A firewall between any DMZ and the internal network zone'
     ],
+    methodology: ['DOCUMENT'],
+    tags: ['firewall', 'internet', 'DMZ', 'internal network', 'perimeter']
   },
+
+  // 1.1.3.b
   {
-    id: 6,
-    title: 'Secure Systems and Software',
-    shortTitle: 'Secure Dev',
-    description: 'Develop and maintain secure systems and software.',
-    goalArea: 'vuln',
-    items: [
-      {
-        id: '6.1.1',
-        title: 'Policies and procedures for Req 6 are documented and maintained',
-        hint: 'Cover vulnerability management, secure development practices, change control, and web application security policies.',
-        testingMethods: ['Examine'],
-        newlyMandatory: false,
-        dependencies: [],
-      },
-      {
-        id: '6.2.1',
-        title: 'Bespoke and custom software developed securely',
-        hint: 'Apply secure coding guidelines (OWASP Top 10, CERT). Include code reviews or static analysis in the development process.',
-        testingMethods: ['Examine', 'Interview'],
-        newlyMandatory: false,
-        dependencies: [],
-      },
-      {
-        id: '6.3.1',
-        title: 'Vulnerabilities identified and risk ranked',
-        hint: 'Use CVSS or equivalent. This risk-ranking process is referenced by Req 11.4.4 for penetration test remediation priorities.',
-        testingMethods: ['Examine', 'Interview'],
-        newlyMandatory: false,
-        dependencies: ['11.4.4'],
-      },
-      {
-        id: '6.3.3',
-        title: 'Critical and high security patches installed within defined timeframes',
-        hint: 'Critical patches should typically be installed within 30 days. Define timeframes and track compliance through your patch management process.',
-        testingMethods: ['Examine', 'Observe'],
-        newlyMandatory: false,
-        dependencies: [],
-      },
-      {
-        id: '6.4.1',
-        title: 'Public-facing web applications protected against known attacks',
-        hint: 'Use a Web Application Firewall (WAF) or review application code manually/automatically at least annually and after changes.',
-        testingMethods: ['Examine', 'Observe'],
-        newlyMandatory: false,
-        dependencies: [],
-      },
-      {
-        id: '6.4.2',
-        title: 'WAF deployed for public-facing web applications',
-        hint: 'Automated technical solution (WAF) must detect and prevent web-based attacks. Configure in active blocking mode.',
-        testingMethods: ['Examine', 'Observe'],
-        newlyMandatory: true,
-        dependencies: [],
-      },
-      {
-        id: '6.4.3',
-        title: 'Payment page scripts managed: inventoried, authorized, integrity-checked',
-        hint: 'CRITICAL new control: maintain an inventory of all scripts on payment pages, authorize each, implement integrity monitoring (SRI, CSP). Links to TPSP management at 12.8/12.9.',
-        testingMethods: ['Examine', 'Observe'],
-        newlyMandatory: true,
-        dependencies: ['12.8', '12.9', '11.6.1'],
-      },
-      {
-        id: '6.5.1',
-        title: 'Changes to system components managed via change control process',
-        hint: 'Central dependency: referenced by Req 1.2.2 (NSC changes) and 11.3.2.1 (scan revalidation). Include documentation, testing, approval, and back-out procedures.',
-        testingMethods: ['Examine', 'Interview', 'Observe'],
-        newlyMandatory: false,
-        dependencies: ['1.2.2', '11.3.2.1'],
-      },
+    id: 'req1.1.3b',
+    section: '1.1.3.b',
+    requirement: 'Current network diagram is consistent with the firewall configuration standards',
+    testingProcedure: 'Verify that the current network diagram is consistent with the firewall configuration standards.',
+    isParent: false,
+    parentSection: '1.1',
+    rocDetails: [
+      'Identify the current network diagrams and firewall configuration standards reviewed.',
+      'Describe how the reviewed documents were confirmed to be consistent with one another.'
     ],
+    methodology: ['DOCUMENT'],
+    tags: ['network diagram', 'firewall', 'configuration standards', 'consistency']
   },
+
+  // 1.1.4
   {
-    id: 7,
-    title: 'Restrict Access by Business Need',
-    shortTitle: 'Access Control',
-    description: 'Restrict access to system components and cardholder data by business need to know.',
-    goalArea: 'access',
-    items: [
-      {
-        id: '7.1.1',
-        title: 'Policies and procedures for Req 7 are documented and maintained',
-        hint: 'Define access control policies including need-to-know principles, role-based access, and access request/approval workflows.',
-        testingMethods: ['Examine'],
-        newlyMandatory: false,
-        dependencies: [],
-      },
-      {
-        id: '7.2.1',
-        title: 'Access control model defined and includes all system components',
-        hint: 'Define role-based or attribute-based access control model. Cover all system types: applications, databases, network devices, file systems.',
-        testingMethods: ['Examine'],
-        newlyMandatory: false,
-        dependencies: [],
-      },
-      {
-        id: '7.2.2',
-        title: 'Access assigned based on job classification and function',
-        hint: 'Map roles to access privileges. Ensure the principle of least privilege is applied. Document access matrices.',
-        testingMethods: ['Examine', 'Interview'],
-        newlyMandatory: false,
-        dependencies: [],
-      },
-      {
-        id: '7.2.3',
-        title: 'Required privileges approved by authorized management',
-        hint: 'All access grants must have documented management approval. Maintain records of who approved what access and when.',
-        testingMethods: ['Examine'],
-        newlyMandatory: false,
-        dependencies: [],
-      },
-      {
-        id: '7.2.5',
-        title: 'Access for application and system accounts assigned with least privileges',
-        hint: 'Service and application accounts should have minimum necessary permissions. Review and justify each account privilege.',
-        testingMethods: ['Examine', 'Interview'],
-        newlyMandatory: false,
-        dependencies: ['8.6.1'],
-      },
-      {
-        id: '7.2.5.1',
-        title: 'Review of access for application/system accounts at least every six months',
-        hint: 'Regularly validate that service account permissions are still appropriate. Document review findings and any adjustments.',
-        testingMethods: ['Examine', 'Interview'],
-        newlyMandatory: true,
-        dependencies: [],
-      },
-      {
-        id: '7.2.6',
-        title: 'Access to query repositories of stored cardholder data restricted',
-        hint: 'Limit database query access. Only DBAs and approved applications should have direct query access. Audit all queries.',
-        testingMethods: ['Examine', 'Observe'],
-        newlyMandatory: false,
-        dependencies: [],
-      },
+    id: 'req1.1.4',
+    section: '1.1.4',
+    requirement: 'Description of groups, roles, and responsibilities for logical management of network components',
+    testingProcedure: 'Verify that firewall and router configuration standards include a description of groups, roles, and responsibilities for logical management of network components.',
+    isParent: false,
+    parentSection: '1.1',
+    rocDetails: [
+      'Identify the firewall configuration standards that include descriptions of the following for logical management of components: (i) Groups, (ii) Roles, (iii) Responsibilities',
+      'Identify the router configuration standards that include descriptions of the following for logical management of components: (i) Groups, (ii) Roles, (iii) Responsibilities',
+      'Identify the personnel holding those roles and responsibilities who were interviewed, and who confirm that the roles and responsibilities are assigned as documented for: (i) Logical management of router components, (ii) Logical management of firewall components'
     ],
+    methodology: ['DOCUMENT', 'INTERVIEW'],
+    tags: ['roles', 'responsibilities', 'groups', 'management', 'firewall', 'router']
   },
+
+  // 1.1.5.a
   {
-    id: 8,
-    title: 'Identification and Authentication',
-    shortTitle: 'Authentication',
-    description: 'Identify users and authenticate access to system components.',
-    goalArea: 'access',
-    items: [
-      {
-        id: '8.1.1',
-        title: 'Policies and procedures for Req 8 are documented and maintained',
-        hint: 'Cover user ID management, authentication mechanisms, MFA requirements, password policies, and service account management.',
-        testingMethods: ['Examine'],
-        newlyMandatory: false,
-        dependencies: [],
-      },
-      {
-        id: '8.2.1',
-        title: 'All users assigned a unique ID before access is allowed',
-        hint: 'No shared or generic IDs except where specifically documented as necessary (e.g., legacy systems). Every action must be traceable to an individual.',
-        testingMethods: ['Examine', 'Interview'],
-        newlyMandatory: false,
-        dependencies: ['10.2.1'],
-      },
-      {
-        id: '8.2.2',
-        title: 'Group, shared, or generic accounts only used when necessary',
-        hint: 'Document business justification for any shared account. Implement additional controls to track individual user activity.',
-        testingMethods: ['Examine', 'Interview'],
-        newlyMandatory: false,
-        dependencies: [],
-      },
-      {
-        id: '8.3.1',
-        title: 'All user access authenticated using at least one authentication factor',
-        hint: 'Something you know, something you have, or something you are. No unauthenticated access to in-scope systems.',
-        testingMethods: ['Examine', 'Observe'],
-        newlyMandatory: false,
-        dependencies: [],
-      },
-      {
-        id: '8.3.6',
-        title: 'Passwords/passphrases meet minimum complexity (12+ characters, numeric + alpha)',
-        hint: 'NOW MANDATORY: Minimum 12 characters with both numeric and alphabetic characters (or 8 if system cannot support 12, with complexity equivalent).',
-        testingMethods: ['Examine', 'Observe'],
-        newlyMandatory: true,
-        dependencies: [],
-      },
-      {
-        id: '8.4.2',
-        title: 'MFA for all access into the CDE',
-        hint: 'NOW MANDATORY: MFA required for ALL access into the CDE, not just remote access. This is a significant expansion from v3.2.1.',
-        testingMethods: ['Examine', 'Observe'],
-        newlyMandatory: true,
-        dependencies: ['8.5.1'],
-      },
-      {
-        id: '8.4.3',
-        title: 'MFA for all non-console administrative access',
-        hint: 'All remote admin access must use MFA. This includes access to management interfaces, admin consoles, and privileged sessions.',
-        testingMethods: ['Examine', 'Observe'],
-        newlyMandatory: false,
-        dependencies: ['8.5.1'],
-      },
-      {
-        id: '8.5.1',
-        title: 'MFA systems implemented securely',
-        hint: 'NOW MANDATORY: MFA must resist replay attacks, cannot be bypassed, use at least two different authentication factor types. SMS OTP alone is not considered phishing-resistant.',
-        testingMethods: ['Examine', 'Observe'],
-        newlyMandatory: true,
-        dependencies: [],
-      },
-      {
-        id: '8.6.1',
-        title: 'System/application account interactive login managed',
-        hint: 'NOW MANDATORY: Interactive login must be prevented for service and application accounts unless explicitly needed. If needed, protect with MFA and approve per use.',
-        testingMethods: ['Examine', 'Observe'],
-        newlyMandatory: true,
-        dependencies: ['7.2.5'],
-      },
-      {
-        id: '8.6.2',
-        title: 'Passwords for system/application accounts not hard-coded in scripts/files',
-        hint: 'NOW MANDATORY: No credentials in source code, scripts, or configuration files. Use vaults, environment variables, or secrets management solutions.',
-        testingMethods: ['Examine', 'Observe', 'Interview'],
-        newlyMandatory: true,
-        dependencies: [],
-      },
-      {
-        id: '8.6.3',
-        title: 'Service account password complexity per targeted risk analysis',
-        hint: 'NOW MANDATORY: Password complexity for service accounts must be set based on targeted risk analysis per Req 12.3.1.',
-        testingMethods: ['Examine'],
-        newlyMandatory: true,
-        dependencies: ['12.3.1'],
-      },
+    id: 'req1.1.5a',
+    section: '1.1.5.a',
+    requirement: 'Documentation and business justification for use of all services, protocols, and ports allowed',
+    testingProcedure: 'Verify that firewall and router configuration standards include a documented list of services, protocols and ports necessary for business\u2014for example, HTTP, SSL, SSH, and VPN protocols.',
+    isParent: false,
+    parentSection: '1.1',
+    rocDetails: [
+      'For each of the following, identify the firewall configuration standards which define those necessary for business, including a business justification for each: (i) Services, (ii) Protocols, (iii) Ports',
+      'For each of the following, identify the router configuration standards which define those necessary for business, including a business justification for each: (i) Services, (ii) Protocols, (iii) Ports'
     ],
+    methodology: ['DOCUMENT'],
+    tags: ['services', 'protocols', 'ports', 'business justification', 'HTTP', 'SSL', 'SSH', 'VPN']
   },
+
+  // 1.1.5.b
   {
-    id: 9,
-    title: 'Physical Access Controls',
-    shortTitle: 'Physical',
-    description: 'Restrict physical access to cardholder data and systems.',
-    goalArea: 'access',
-    items: [
-      {
-        id: '9.1.1',
-        title: 'Policies and procedures for Req 9 are documented and maintained',
-        hint: 'Cover facility access controls, visitor management, media handling, and POI device security procedures.',
-        testingMethods: ['Examine'],
-        newlyMandatory: false,
-        dependencies: [],
-      },
-      {
-        id: '9.2.1',
-        title: 'Appropriate facility entry controls to restrict physical access to CDE',
-        hint: 'Use badge readers, locks, biometrics, or other controls. Log all entry. Distinguish between employee and visitor access.',
-        testingMethods: ['Examine', 'Observe'],
-        newlyMandatory: false,
-        dependencies: [],
-      },
-      {
-        id: '9.3.1',
-        title: 'Procedures for authorizing and managing visitor access',
-        hint: 'Visitors must be identified, escorted, and logged. Visitor badges should be visually distinct from employee badges.',
-        testingMethods: ['Examine', 'Observe', 'Interview'],
-        newlyMandatory: false,
-        dependencies: [],
-      },
-      {
-        id: '9.4.1',
-        title: 'All media physically secured (backups, tapes, paper)',
-        hint: 'Store media in secure locations with limited access. Maintain an inventory of all media containing cardholder data.',
-        testingMethods: ['Examine', 'Observe'],
-        newlyMandatory: false,
-        dependencies: [],
-      },
-      {
-        id: '9.4.7',
-        title: 'Electronic media with cardholder data destroyed when no longer needed',
-        hint: 'Use cross-cut shredding for paper, degaussing or destruction for electronic media. Use a certified destruction vendor if outsourced.',
-        testingMethods: ['Examine', 'Observe', 'Interview'],
-        newlyMandatory: false,
-        dependencies: ['3.2.1'],
-      },
-      {
-        id: '9.5.1',
-        title: 'POI devices protected from tampering and unauthorized substitution',
-        hint: 'Maintain a device list with serial numbers. Train personnel to detect tampering. Regularly inspect devices.',
-        testingMethods: ['Examine', 'Observe', 'Interview'],
-        newlyMandatory: false,
-        dependencies: [],
-      },
-      {
-        id: '9.5.1.2.1',
-        title: 'POI device inspection frequency defined via targeted risk analysis',
-        hint: 'NOW MANDATORY: Inspection frequency must be determined through targeted risk analysis per Req 12.3.1. Consider device location, risk of unattended access.',
-        testingMethods: ['Examine'],
-        newlyMandatory: true,
-        dependencies: ['12.3.1'],
-      },
+    id: 'req1.1.5b',
+    section: '1.1.5.b',
+    requirement: 'Identify insecure services, protocols, and ports allowed; verify security features are documented and implemented',
+    testingProcedure: 'Identify insecure services, protocols, and ports allowed; and verify they are necessary and that security features are documented and implemented by examining firewall and router configuration standards and settings for each service.',
+    isParent: false,
+    parentSection: '1.1',
+    rocDetails: [
+      'Identify whether any insecure services, protocols or ports are allowed.',
+      'For each insecure service, protocol and port allowed: (i) Identify the documented justification, (ii) Identify the responsible personnel interviewed who confirm that each insecure service/protocol/port is necessary, (iii) Identify the firewall and router configuration standards which define the security features required for each insecure service/protocol/port, (iv) Describe how observed firewall configurations verify the security features are implemented, (v) Describe how observed router configurations verify the security features are implemented.'
     ],
+    methodology: ['OBSERVE', 'INTERVIEW', 'PROCESS'],
+    tags: ['insecure services', 'protocols', 'ports', 'security features', 'FTP', 'Telnet', 'POP3', 'IMAP', 'SNMP']
   },
+
+  // 1.1.6.a
   {
-    id: 10,
-    title: 'Logging and Monitoring',
-    shortTitle: 'Logging',
-    description: 'Log and monitor all access to system components and cardholder data.',
-    goalArea: 'monitor',
-    items: [
-      {
-        id: '10.1.1',
-        title: 'Policies and procedures for Req 10 are documented and maintained',
-        hint: 'Cover log collection, review processes, retention periods, time synchronization, and automated review mechanisms.',
-        testingMethods: ['Examine'],
-        newlyMandatory: false,
-        dependencies: [],
-      },
-      {
-        id: '10.2.1',
-        title: 'Audit logs enabled and active for all system components',
-        hint: 'Capture user access, admin actions, access to logs, invalid access attempts, use of privileges, changes to auth mechanisms, and system-level objects.',
-        testingMethods: ['Examine', 'Observe', 'Interview'],
-        newlyMandatory: false,
-        dependencies: ['8.2.1'],
-      },
-      {
-        id: '10.2.2',
-        title: 'Audit logs record specified details for each auditable event',
-        hint: 'Log entries must include: user ID, event type, date/time, success/failure, origination of event, and identity/name of affected data/component.',
-        testingMethods: ['Examine', 'Observe'],
-        newlyMandatory: false,
-        dependencies: [],
-      },
-      {
-        id: '10.3.1',
-        title: 'Read access to audit trail files limited to those with job need',
-        hint: 'Audit logs should be read-only for authorized personnel. Implement file integrity monitoring on log files.',
-        testingMethods: ['Examine', 'Observe', 'Interview'],
-        newlyMandatory: false,
-        dependencies: [],
-      },
-      {
-        id: '10.4.1',
-        title: 'Audit logs reviewed at least once daily (critical systems)',
-        hint: 'Daily review of logs from security events, critical system components, and systems that perform security functions (firewalls, IDS, authentication).',
-        testingMethods: ['Examine', 'Interview'],
-        newlyMandatory: false,
-        dependencies: [],
-      },
-      {
-        id: '10.4.1.1',
-        title: 'Automated mechanisms perform audit log reviews',
-        hint: 'NOW MANDATORY: Deploy SIEM, log analysis tools, or equivalent automated mechanisms. Manual-only review is no longer sufficient.',
-        testingMethods: ['Examine', 'Observe'],
-        newlyMandatory: true,
-        dependencies: [],
-      },
-      {
-        id: '10.4.2.1',
-        title: 'Frequency of log review for all other system components via targeted risk analysis',
-        hint: 'NOW MANDATORY: For components not reviewed daily, frequency must be set via targeted risk analysis per Req 12.3.1.',
-        testingMethods: ['Examine'],
-        newlyMandatory: true,
-        dependencies: ['12.3.1'],
-      },
-      {
-        id: '10.5.1',
-        title: 'Audit log history retained for at least 12 months (3 months immediately available)',
-        hint: 'At minimum, keep 3 months of logs online/immediately accessible. Archive remaining 9 months with ability to restore promptly.',
-        testingMethods: ['Examine', 'Interview'],
-        newlyMandatory: false,
-        dependencies: [],
-      },
-      {
-        id: '10.6.1',
-        title: 'System clocks synchronized using time-synchronization technology',
-        hint: 'Use NTP or equivalent. All system clocks must be synchronized to the same time source. Critical for log correlation across systems.',
-        testingMethods: ['Examine', 'Observe'],
-        newlyMandatory: false,
-        dependencies: [],
-      },
-      {
-        id: '10.7.1',
-        title: 'Failures of critical security control systems detected and reported',
-        hint: 'Monitor for failures of firewalls, IDS/IPS, FIM, anti-malware, access controls, and audit logging. Alert and trigger incident response.',
-        testingMethods: ['Examine', 'Observe'],
-        newlyMandatory: false,
-        dependencies: ['12.10'],
-      },
+    id: 'req1.1.6a',
+    section: '1.1.6.a',
+    requirement: 'Requirement to review firewall and router rule sets at least every six months',
+    testingProcedure: 'Verify that firewall and router configuration standards require review of firewall and router rule sets at least every six months.',
+    isParent: false,
+    parentSection: '1.1',
+    rocDetails: [
+      'Identify the firewall configuration standards that require a review of firewall rule sets at least every six months.',
+      'Identify the router configuration standards that require a review of router rule sets at least every six months.'
     ],
+    methodology: ['DOCUMENT'],
+    tags: ['rule sets', 'review', 'six months', 'firewall', 'router']
   },
+
+  // 1.1.6.b
   {
-    id: 11,
-    title: 'Security Testing',
-    shortTitle: 'Testing',
-    description: 'Test security of systems and networks regularly.',
-    goalArea: 'monitor',
-    items: [
-      {
-        id: '11.1.1',
-        title: 'Policies and procedures for Req 11 are documented and maintained',
-        hint: 'Cover wireless testing, vulnerability scanning (internal/external), penetration testing, IDS/IPS, and change detection.',
-        testingMethods: ['Examine'],
-        newlyMandatory: false,
-        dependencies: [],
-      },
-      {
-        id: '11.2.1',
-        title: 'Authorized and unauthorized wireless access points managed',
-        hint: 'Perform quarterly wireless scans or use wireless IDS/IPS. Identify and respond to any unauthorized access points.',
-        testingMethods: ['Examine', 'Observe'],
-        newlyMandatory: false,
-        dependencies: [],
-      },
-      {
-        id: '11.3.1',
-        title: 'Internal vulnerability scans performed at least quarterly',
-        hint: 'Quarterly scans with rescans until all high-risk vulnerabilities are resolved. Use authenticated scanning for deeper coverage.',
-        testingMethods: ['Examine'],
-        newlyMandatory: false,
-        dependencies: [],
-      },
-      {
-        id: '11.3.1.1',
-        title: 'All other vulnerabilities managed per targeted risk analysis',
-        hint: 'NOW MANDATORY: Non-high/critical vulnerabilities from internal scans must be managed based on targeted risk analysis.',
-        testingMethods: ['Examine'],
-        newlyMandatory: true,
-        dependencies: ['12.3.1'],
-      },
-      {
-        id: '11.3.1.2',
-        title: 'Internal scans via authenticated scanning',
-        hint: 'NOW MANDATORY: Use credentialed scanning to get deeper, more accurate vulnerability assessment results.',
-        testingMethods: ['Examine', 'Observe'],
-        newlyMandatory: true,
-        dependencies: [],
-      },
-      {
-        id: '11.3.2',
-        title: 'External vulnerability scans performed quarterly by ASV',
-        hint: 'Engage a PCI SSC Approved Scanning Vendor. Must achieve passing scan (no CVSS 4.0+ vulnerabilities) or documented exceptions.',
-        testingMethods: ['Examine'],
-        newlyMandatory: false,
-        dependencies: [],
-      },
-      {
-        id: '11.3.2.1',
-        title: 'Vulnerability scans reperformed after significant changes',
-        hint: 'Rescan after changes defined through the change control process at 6.5.1. Verify no new vulnerabilities introduced.',
-        testingMethods: ['Examine'],
-        newlyMandatory: false,
-        dependencies: ['6.5.1'],
-      },
-      {
-        id: '11.4.1',
-        title: 'Penetration testing performed at least annually and after significant changes',
-        hint: 'Must follow an industry-accepted methodology (NIST SP 800-115, OWASP, PTES). Cover both internal and external testing.',
-        testingMethods: ['Examine', 'Interview'],
-        newlyMandatory: false,
-        dependencies: [],
-      },
-      {
-        id: '11.4.4',
-        title: 'Exploitable vulnerabilities found in pen testing are corrected and retested',
-        hint: 'Use the vulnerability risk ranking process from 6.3.1 to prioritize remediation. Retest to confirm fixes.',
-        testingMethods: ['Examine'],
-        newlyMandatory: false,
-        dependencies: ['6.3.1'],
-      },
-      {
-        id: '11.4.7',
-        title: 'Multi-tenant service providers test segmentation controls per customer',
-        hint: 'NOW MANDATORY: For multi-tenant service providers, penetration testing must confirm segmentation between customer environments at least every six months.',
-        testingMethods: ['Examine', 'Interview'],
-        newlyMandatory: true,
-        dependencies: ['12.8', '12.9'],
-      },
-      {
-        id: '11.5.1',
-        title: 'Intrusion detection/prevention used to detect and/or prevent intrusions',
-        hint: 'Deploy IDS/IPS at the perimeter and at critical points within the CDE. Keep signatures current. Alert on all suspicious traffic.',
-        testingMethods: ['Examine', 'Observe'],
-        newlyMandatory: false,
-        dependencies: ['12.10'],
-      },
-      {
-        id: '11.5.1.1',
-        title: 'IDS/IPS used to detect covert malware communication channels',
-        hint: 'NOW MANDATORY: IDS/IPS must detect covert communication (DNS tunneling, encrypted channels to C2 servers). Alerts must feed incident response.',
-        testingMethods: ['Examine', 'Observe'],
-        newlyMandatory: true,
-        dependencies: ['12.10'],
-      },
-      {
-        id: '11.6.1',
-        title: 'Change/tamper detection mechanism on payment pages',
-        hint: 'NOW MANDATORY (CRITICAL): Deploy mechanisms to detect unauthorized changes to HTTP headers and payment page content. Frequency per TRA at 12.3.1.',
-        testingMethods: ['Examine', 'Observe'],
-        newlyMandatory: true,
-        dependencies: ['12.3.1', '6.4.3'],
-      },
+    id: 'req1.1.6b',
+    section: '1.1.6.b',
+    requirement: 'Obtain and examine documentation to verify rule sets are reviewed at least every six months',
+    testingProcedure: 'Obtain and examine documentation to verify that the rule sets are reviewed at least every six months.',
+    isParent: false,
+    parentSection: '1.1',
+    rocDetails: [
+      'Identify documented results of previous: (i) Firewall rule set reviews, (ii) Router rule set reviews',
+      'Identify the responsible personnel interviewed who confirm that: (i) Firewall rule set reviews are completed at least every six months, (ii) Router rule set reviews are completed at least every six months.'
     ],
+    methodology: ['DOCUMENT', 'INTERVIEW'],
+    tags: ['rule sets', 'review', 'six months', 'documentation', 'evidence']
   },
+
+  // 1.2 - Parent requirement (header only)
   {
-    id: 12,
-    title: 'Security Policies and Programs',
-    shortTitle: 'Policies',
-    description: 'Support information security with organizational policies and programs.',
-    goalArea: 'policy',
-    items: [
-      {
-        id: '12.1.1',
-        title: 'Information security policy established, published, maintained, and disseminated',
-        hint: 'Policy must address all PCI DSS requirements, be reviewed at least annually, and be acknowledged by all relevant personnel.',
-        testingMethods: ['Examine'],
-        newlyMandatory: false,
-        dependencies: [],
-      },
-      {
-        id: '12.2.1',
-        title: 'Acceptable use policies for end-user technologies documented and implemented',
-        hint: 'Cover approved uses, prohibited activities, required security measures, and consequences for policy violations.',
-        testingMethods: ['Examine', 'Interview'],
-        newlyMandatory: false,
-        dependencies: [],
-      },
-      {
-        id: '12.3.1',
-        title: 'Targeted risk analysis methodology documented for each flexible requirement',
-        hint: 'CRITICAL HUB: This is the most heavily referenced sub-requirement in PCI DSS v4.0.1. Seven other requirements depend on it: 5.2.3.1, 5.3.2.1, 8.6.3, 9.5.1.2.1, 10.4.2.1, 11.6.1, 12.10.4.1. Establish a formal, repeatable methodology.',
-        testingMethods: ['Examine', 'Interview'],
-        newlyMandatory: true,
-        dependencies: [],
-      },
-      {
-        id: '12.3.4',
-        title: 'Cryptographic cipher suites and protocols reviewed at least annually',
-        hint: 'NOW MANDATORY: Review all in-use cryptographic suites and protocols annually. Check for deprecated algorithms and plan migration.',
-        testingMethods: ['Examine', 'Interview'],
-        newlyMandatory: true,
-        dependencies: ['3.6.1', '4.2.1'],
-      },
-      {
-        id: '12.4.1',
-        title: 'Executive management establishes responsibility for PCI DSS compliance',
-        hint: 'A specific executive must be assigned overall accountability. Document the assignment and ensure it includes a charter or mandate.',
-        testingMethods: ['Examine', 'Interview'],
-        newlyMandatory: false,
-        dependencies: [],
-      },
-      {
-        id: '12.5.1',
-        title: 'PCI DSS scope documented and confirmed annually',
-        hint: 'Document all in-scope networks, systems, and processes. Confirm scope at least annually and upon significant changes.',
-        testingMethods: ['Examine', 'Interview'],
-        newlyMandatory: false,
-        dependencies: ['1.2.3', '1.2.4'],
-      },
-      {
-        id: '12.5.2',
-        title: 'PCI DSS scope documented and validated at least every 12 months',
-        hint: 'Perform a formal scope validation exercise annually. Document the methodology and results. Cross-reference network and data-flow diagrams.',
-        testingMethods: ['Examine', 'Interview'],
-        newlyMandatory: false,
-        dependencies: ['1.2.3', '1.2.4'],
-      },
-      {
-        id: '12.5.2.1',
-        title: 'Scope documentation includes impact analysis for significant organizational changes',
-        hint: 'NOW MANDATORY: When significant changes occur (merger, acquisition, new CDE), document the impact on PCI DSS scope before the change takes effect.',
-        testingMethods: ['Examine', 'Interview'],
-        newlyMandatory: true,
-        dependencies: ['12.5.2'],
-      },
-      {
-        id: '12.5.3',
-        title: 'Significant organizational change impact reviewed on PCI DSS scope',
-        hint: 'NOW MANDATORY: Formalize the review process for organizational changes that could affect PCI DSS scope or controls.',
-        testingMethods: ['Examine', 'Interview'],
-        newlyMandatory: true,
-        dependencies: [],
-      },
-      {
-        id: '12.6.1',
-        title: 'Security awareness program implemented for all personnel',
-        hint: 'Cover PCI DSS requirements, acceptable use policies, and threat awareness. New hires must be trained upon onboarding.',
-        testingMethods: ['Examine', 'Interview'],
-        newlyMandatory: false,
-        dependencies: [],
-      },
-      {
-        id: '12.6.2',
-        title: 'Security awareness program reviewed at least every 12 months',
-        hint: 'NOW MANDATORY: Annual review and update of awareness content. Keep current with emerging threats and organizational changes.',
-        testingMethods: ['Examine'],
-        newlyMandatory: true,
-        dependencies: [],
-      },
-      {
-        id: '12.6.3.1',
-        title: 'Security awareness includes phishing and social engineering training',
-        hint: 'NOW MANDATORY: Specific training on recognizing and reporting phishing attacks. Consider simulated phishing exercises.',
-        testingMethods: ['Examine', 'Interview'],
-        newlyMandatory: true,
-        dependencies: ['5.4.1'],
-      },
-      {
-        id: '12.6.3.2',
-        title: 'Security awareness includes acceptable use policies',
-        hint: 'NOW MANDATORY: Train all personnel on acceptable use of end-user technologies per Req 12.2.1.',
-        testingMethods: ['Examine'],
-        newlyMandatory: true,
-        dependencies: ['12.2.1'],
-      },
-      {
-        id: '12.8.1',
-        title: 'List of TPSPs maintained with description of services',
-        hint: 'Maintain an inventory of all third-party service providers with access to or impact on cardholder data security.',
-        testingMethods: ['Examine'],
-        newlyMandatory: false,
-        dependencies: [],
-      },
-      {
-        id: '12.8.5',
-        title: 'Information about PCI DSS requirements managed by each TPSP documented',
-        hint: 'Document which PCI DSS requirements are the entity\'s responsibility and which are the TPSP\'s for each service provider.',
-        testingMethods: ['Examine', 'Interview'],
-        newlyMandatory: false,
-        dependencies: ['6.4.3', '11.4.7'],
-      },
-      {
-        id: '12.10.1',
-        title: 'Incident response plan exists and is ready to activate',
-        hint: 'Plan must include roles/responsibilities, communication procedures, notification requirements, containment, and lessons learned processes.',
-        testingMethods: ['Examine'],
-        newlyMandatory: false,
-        dependencies: ['10.7.1', '11.5.1'],
-      },
-      {
-        id: '12.10.4.1',
-        title: 'Incident response training frequency per targeted risk analysis',
-        hint: 'NOW MANDATORY: Training frequency for IR personnel must be determined via targeted risk analysis per Req 12.3.1.',
-        testingMethods: ['Examine'],
-        newlyMandatory: true,
-        dependencies: ['12.3.1'],
-      },
-      {
-        id: '12.10.7',
-        title: 'Incident response procedures for unexpected PAN discovery',
-        hint: 'NOW MANDATORY: Have a documented process for what to do when PAN is found in unexpected locations (unencrypted files, email, logs).',
-        testingMethods: ['Examine', 'Interview'],
-        newlyMandatory: true,
-        dependencies: [],
-      },
-    ],
+    id: 'req1.2',
+    section: '1.2',
+    requirement: 'Build firewall and router configurations that restrict connections between untrusted networks and any system components in the cardholder data environment.',
+    testingProcedure: 'Examine firewall and router configurations to verify that connections are restricted between untrusted networks and system components in the cardholder data environment, as follows:',
+    isParent: true,
+    parentSection: '1.2',
+    rocDetails: [],
+    methodology: [],
+    tags: ['firewall', 'router', 'untrusted networks', 'cardholder data environment']
   },
+
+  // 1.2.1.a
+  {
+    id: 'req1.2.1a',
+    section: '1.2.1.a',
+    requirement: 'Restrict inbound and outbound traffic to that which is necessary for the cardholder data environment',
+    testingProcedure: 'Verify that inbound and outbound traffic is limited to that which is necessary for the cardholder data environment, and that the restrictions are documented.',
+    isParent: false,
+    parentSection: '1.2',
+    rocDetails: [
+      'Describe how observed firewall/router configurations limit traffic to that which is necessary for the cardholder data environment: (i) Inbound, (ii) Outbound',
+      'Identify the document that defines the restrictions and confirm this is consistent with the observed configurations: (i) Inbound, (ii) Outbound',
+      'Describe how inbound and outbound traffic was observed to be limited to that which is necessary for the cardholder data environment: (i) Inbound, (ii) Outbound'
+    ],
+    methodology: ['OBSERVE', 'DOCUMENT', 'PROCESS'],
+    tags: ['inbound', 'outbound', 'traffic', 'restrict', 'cardholder data environment']
+  },
+
+  // 1.2.1.b
+  {
+    id: 'req1.2.1b',
+    section: '1.2.1.b',
+    requirement: 'All other inbound and outbound traffic is specifically denied (e.g., explicit "deny all" or implicit deny after allow)',
+    testingProcedure: 'Verify that all other inbound and outbound traffic is specifically denied, for example by using an explicit "deny all" or an implicit deny after allow statement.',
+    isParent: false,
+    parentSection: '1.2',
+    rocDetails: [
+      'Describe how firewall and router configurations were observed to specifically deny all other traffic: (i) Inbound, (ii) Outbound'
+    ],
+    methodology: ['OBSERVE'],
+    tags: ['deny all', 'implicit deny', 'inbound', 'outbound', 'traffic']
+  },
+
+  // 1.2.2
+  {
+    id: 'req1.2.2',
+    section: '1.2.2',
+    requirement: 'Secure and synchronize router configuration files',
+    testingProcedure: 'Verify that router configuration files are secure and synchronized\u2014for example, running configuration files (used for normal running of the routers) and start-up configuration files (used when machines are re-booted), have the same, secure configurations.',
+    isParent: false,
+    parentSection: '1.2',
+    rocDetails: [
+      'Describe how the router configuration files were observed to be secured.',
+      'Describe how the router configuration files were observed to be synchronized.'
+    ],
+    methodology: ['OBSERVE', 'PROCESS'],
+    tags: ['router', 'configuration files', 'secure', 'synchronized', 'startup', 'running']
+  },
+
+  // 1.2.3
+  {
+    id: 'req1.2.3',
+    section: '1.2.3',
+    requirement: 'Install perimeter firewalls between any wireless networks and the cardholder data environment',
+    testingProcedure: 'Verify that there are perimeter firewalls installed between any wireless networks and systems that store cardholder data, and that these firewalls deny or control (if such traffic is necessary for business purposes) any traffic from the wireless environment into the cardholder data environment.',
+    isParent: false,
+    parentSection: '1.2',
+    rocDetails: [
+      'Describe how firewalls were observed to be in place between any wireless networks and systems that store cardholder data.',
+      'Describe how firewall configurations were observed to deny or control all traffic from any wireless environment into the cardholder data environment.',
+      'Identify the responsible personnel interviewed who confirm that any permitted traffic from the wireless environment into the cardholder data environment is necessary for business purposes.'
+    ],
+    methodology: ['OBSERVE', 'INTERVIEW', 'PROCESS'],
+    tags: ['wireless', 'perimeter firewall', 'cardholder data', 'deny', 'control']
+  },
+
+  // 1.3 - Parent requirement (header only)
+  {
+    id: 'req1.3',
+    section: '1.3',
+    requirement: 'Prohibit direct public access between the Internet and any system component in the cardholder data environment.',
+    testingProcedure: 'Examine firewall and router configurations\u2014including but not limited to the choke router at the Internet, the DMZ router and firewall, the DMZ cardholder segment, the perimeter router, and the internal cardholder network segment\u2014to determine that there is no direct access between the Internet and system components in the internal cardholder network segment, as detailed below.',
+    isParent: true,
+    parentSection: '1.3',
+    rocDetails: [],
+    methodology: [],
+    tags: ['DMZ', 'internet', 'direct access', 'cardholder data environment', 'perimeter']
+  },
+
+  // 1.3.1
+  {
+    id: 'req1.3.1',
+    section: '1.3.1',
+    requirement: 'Implement a DMZ to limit inbound traffic to only system components that provide authorized publicly accessible services, protocols, and ports',
+    testingProcedure: 'Verify that a DMZ is implemented to limit inbound traffic to only system components that provide authorized publicly accessible services, protocols, and ports.',
+    isParent: false,
+    parentSection: '1.3',
+    rocDetails: [
+      'Identify the document defining system components that provide authorized publicly accessible services, protocols, and ports.',
+      'Describe how observed firewall/router configurations ensure that the DMZ limits inbound traffic to only those system components.'
+    ],
+    methodology: ['OBSERVE', 'DOCUMENT'],
+    tags: ['DMZ', 'inbound traffic', 'publicly accessible', 'services', 'protocols', 'ports']
+  },
+
+  // 1.3.2
+  {
+    id: 'req1.3.2',
+    section: '1.3.2',
+    requirement: 'Limit inbound Internet traffic to IP addresses within the DMZ',
+    testingProcedure: 'Verify that inbound Internet traffic is limited to IP addresses within the DMZ.',
+    isParent: false,
+    parentSection: '1.3',
+    rocDetails: [
+      'Describe how observed firewall/router configurations limit inbound Internet traffic to IP addresses within the DMZ.',
+      'Describe how inbound Internet traffic was observed to be limited to IP addresses within the DMZ.'
+    ],
+    methodology: ['OBSERVE', 'PROCESS'],
+    tags: ['inbound', 'internet traffic', 'IP addresses', 'DMZ']
+  },
+
+  // 1.3.3
+  {
+    id: 'req1.3.3',
+    section: '1.3.3',
+    requirement: 'Do not allow any direct connections inbound or outbound for traffic between the Internet and the cardholder data environment',
+    testingProcedure: 'Verify direct connections inbound or outbound are not allowed for traffic between the Internet and the cardholder data environment.',
+    isParent: false,
+    parentSection: '1.3',
+    rocDetails: [
+      'Identify the network documents/diagrams specifying that direct connections are not allowed for traffic between the Internet and the cardholder data environment: (i) Inbound, (ii) Outbound',
+      'Describe how observed firewall/router configurations prevent direct connections between Internet and the cardholder data environment: (i) Inbound, (ii) Outbound',
+      'Describe how observed traffic between the Internet and the cardholder data environment confirms that direct connections are not permitted: (i) Inbound, (ii) Outbound'
+    ],
+    methodology: ['OBSERVE', 'DOCUMENT', 'PROCESS'],
+    tags: ['direct connections', 'internet', 'cardholder data environment', 'inbound', 'outbound']
+  },
+
+  // 1.3.4
+  {
+    id: 'req1.3.4',
+    section: '1.3.4',
+    requirement: 'Do not allow internal addresses to pass from the Internet into the DMZ',
+    testingProcedure: 'Verify that internal addresses cannot pass from the Internet into the DMZ.',
+    isParent: false,
+    parentSection: '1.3',
+    rocDetails: [
+      'Describe how observed firewall/router configurations prevent internal addresses passing from the Internet into the DMZ.',
+      'Describe how observed traffic from the Internet into the DMZ confirms that internal addresses cannot pass from the Internet into the DMZ.'
+    ],
+    methodology: ['OBSERVE', 'PROCESS'],
+    tags: ['internal addresses', 'internet', 'DMZ', 'anti-spoofing']
+  },
+
+  // 1.3.5
+  {
+    id: 'req1.3.5',
+    section: '1.3.5',
+    requirement: 'Do not allow unauthorized outbound traffic from the cardholder data environment to the Internet',
+    testingProcedure: 'Verify that outbound traffic from the cardholder data environment to the Internet is explicitly authorized.',
+    isParent: false,
+    parentSection: '1.3',
+    rocDetails: [
+      'Identify the document that explicitly defines authorized outbound traffic from the cardholder data environment to the Internet.',
+      'Describe how firewall/router configurations were observed to allow only explicitly authorized traffic.',
+      'Describe how observed outbound traffic from the cardholder data environment to the Internet confirms that only explicitly authorized traffic is allowed.'
+    ],
+    methodology: ['OBSERVE', 'DOCUMENT', 'PROCESS'],
+    tags: ['outbound traffic', 'cardholder data environment', 'internet', 'authorized']
+  },
+
+  // 1.3.6
+  {
+    id: 'req1.3.6',
+    section: '1.3.6',
+    requirement: 'Implement stateful inspection, also known as dynamic packet filtering (only "established" connections are allowed into the network)',
+    testingProcedure: 'Verify that the firewall performs stateful inspection (dynamic packet filtering). Only established connections should be allowed in, and only if they are associated with a previously established session.',
+    isParent: false,
+    parentSection: '1.3',
+    rocDetails: [
+      'Describe how observed firewall configurations implement stateful inspection.',
+      'Describe how observed network traffic confirms that stateful inspection is implemented (that is, only "established" connections are allowed into the network).'
+    ],
+    methodology: ['OBSERVE', 'PROCESS'],
+    tags: ['stateful inspection', 'dynamic packet filtering', 'established connections']
+  },
+
+  // 1.3.7
+  {
+    id: 'req1.3.7',
+    section: '1.3.7',
+    requirement: 'Place system components that store cardholder data (such as a database) in an internal network zone, segregated from the DMZ and other untrusted networks',
+    testingProcedure: 'Verify that system components that store cardholder data are on an internal network zone, segregated from the DMZ and other untrusted networks.',
+    isParent: false,
+    parentSection: '1.3',
+    rocDetails: [
+      'For all system components that store cardholder data: (i) Identify the diagrams and/or other document(s) which define how system components are located on an internal network zone, segregated from the DMZ and other untrusted networks, (ii) Describe how observed network and system configurations confirm the system components are located on an internal network zone, segregated from the DMZ and other untrusted networks, (iii) Describe how observed network traffic confirms that the system components are located on an internal network zone, segregated from the DMZ and other untrusted networks.'
+    ],
+    methodology: ['OBSERVE', 'DOCUMENT', 'PROCESS'],
+    tags: ['cardholder data', 'internal network zone', 'segregation', 'DMZ', 'database']
+  },
+
+  // 1.3.8.a
+  {
+    id: 'req1.3.8a',
+    section: '1.3.8.a',
+    requirement: 'Do not disclose private IP addresses and routing information to unauthorized parties \u2014 methods are in place',
+    testingProcedure: 'Verify that methods are in place to prevent the disclosure of private IP addresses and routing information from internal networks to the Internet.',
+    isParent: false,
+    parentSection: '1.3',
+    rocDetails: [
+      'Identify the document defining methods to prevent the disclosure of private IP addresses and routing information from internal networks to the Internet.',
+      'Briefly describe the methods in place.',
+      'Describe how observed firewall/router configurations prevent private IP addresses and routing information from being disclosed to the Internet.',
+      'Describe how observed network traffic confirms that private IP addresses and routing information are not disclosed to the Internet.'
+    ],
+    methodology: ['OBSERVE', 'DOCUMENT', 'PROCESS'],
+    tags: ['private IP', 'routing information', 'disclosure', 'NAT', 'proxy']
+  },
+
+  // 1.3.8.b
+  {
+    id: 'req1.3.8b',
+    section: '1.3.8.b',
+    requirement: 'Do not disclose private IP addresses and routing information \u2014 any authorized disclosure is authorized',
+    testingProcedure: 'Verify that any disclosure of private IP addresses and routing information to external entities is authorized.',
+    isParent: false,
+    parentSection: '1.3',
+    rocDetails: [
+      'Identify the document that specifies whether any disclosure of private IP addresses and routing information to external parties is permitted.',
+      'For each permitted disclosure, identify the responsible personnel interviewed who confirm that the disclosure is authorized.',
+      'Describe how observed configurations ensure that any disclosure of private IP addresses and routing information to external entities is authorized.'
+    ],
+    methodology: ['OBSERVE', 'INTERVIEW', 'PROCESS'],
+    tags: ['private IP', 'routing information', 'authorized disclosure', 'external entities']
+  },
+
+  // 1.4 - Parent requirement (header only)
+  {
+    id: 'req1.4',
+    section: '1.4',
+    requirement: 'Install personal firewall software on any mobile and/or employee-owned computers with direct connectivity to the Internet, which are used to access the organization\'s network.',
+    testingProcedure: 'Verify that mobile and/or employee-owned computers with direct connectivity to the Internet and which are used to access the organization\'s network have personal firewall software installed and active.',
+    isParent: true,
+    parentSection: '1.4',
+    rocDetails: [],
+    methodology: [],
+    tags: ['personal firewall', 'mobile', 'employee-owned', 'direct connectivity']
+  },
+
+  // 1.4.a
+  {
+    id: 'req1.4a',
+    section: '1.4.a',
+    requirement: 'Verify personal firewall software is installed and active on mobile/employee-owned computers',
+    testingProcedure: 'Verify that mobile and/or employee-owned computers with direct connectivity to the Internet (for example, laptops used by employees), which are used to access the organization\'s network, have personal firewall software installed and active.',
+    isParent: false,
+    parentSection: '1.4',
+    rocDetails: [
+      'Identify whether mobile and/or employee-owned computers with direct connectivity to the Internet are used to access the organization\'s network.',
+      'Identify the document requiring that mobile and/or employee-owned computers with direct connectivity to the Internet have personal firewall software: (i) Installed, (ii) Active',
+      'Describe how personal firewall software was observed on mobile and/or employee-owned computers to be: (i) Installed, (ii) Active'
+    ],
+    methodology: ['OBSERVE', 'DOCUMENT', 'PROCESS'],
+    tags: ['personal firewall', 'mobile', 'employee-owned', 'laptop', 'installed', 'active']
+  },
+
+  // 1.4.b
+  {
+    id: 'req1.4b',
+    section: '1.4.b',
+    requirement: 'Verify personal firewall software is configured by the organization and is not alterable by users',
+    testingProcedure: 'Verify that the personal firewall software is configured by the organization to specific standards and is not alterable by users of mobile and/or employee-owned computers.',
+    isParent: false,
+    parentSection: '1.4',
+    rocDetails: [
+      'Identify the document defining personal firewall software configuration standards.',
+      'Describe how personal firewall software on mobile and/or employee-owned computers was observed to be: (i) Configured by the organization to the documented configuration standards, (ii) Not alterable by mobile and/or employee-owned computer users'
+    ],
+    methodology: ['OBSERVE', 'DOCUMENT'],
+    tags: ['personal firewall', 'configuration standards', 'not alterable', 'organization managed']
+  }
 ];
-
-export function getRequirement(id) {
-  return requirements.find(r => r.id === id);
-}
-
-export function getGoalForRequirement(reqId) {
-  return GOAL_AREAS.find(g => g.reqs.includes(reqId));
-}
-
-export function getAllItems() {
-  return requirements.flatMap(r => r.items.map(item => ({ ...item, reqId: r.id, reqTitle: r.title })));
-}
-
-export function getNewlyMandatoryItems() {
-  return getAllItems().filter(item => item.newlyMandatory);
-}
