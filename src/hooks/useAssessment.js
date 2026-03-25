@@ -1,7 +1,7 @@
-import { useState, useCallback, useEffect } from 'react';
-import { requirements, STATUS } from '../data/requirements';
+import { useState, useCallback, useEffect, useMemo } from 'react';
+import { requirements, REQUIREMENT_SECTIONS, STATUS } from '../data/requirements';
 
-const STORAGE_KEY = 'pci-dss-assessment';
+const STORAGE_KEY = 'pci-dss-v2-roc-assessment';
 
 function loadState() {
   try {
@@ -13,10 +13,8 @@ function loadState() {
 
 function buildInitialState() {
   const state = {};
-  requirements.forEach(req => {
-    req.items.forEach(item => {
-      state[item.id] = { status: STATUS.NOT_STARTED, notes: '', evidence: '' };
-    });
+  requirements.filter(r => !r.isParent).forEach(req => {
+    state[req.id] = { status: STATUS.NOT_ASSESSED, notes: '', evidence: '' };
   });
   return state;
 }
@@ -68,48 +66,56 @@ export function useAssessment() {
     }));
   }, []);
 
-  const getRequirementProgress = useCallback((reqId) => {
-    const req = requirements.find(r => r.id === reqId);
-    if (!req) return { total: 0, assessed: 0, inPlace: 0, notInPlace: 0, pct: 0 };
-    const total = req.items.length;
-    const assessed = req.items.filter(i => assessments[i.id]?.status !== STATUS.NOT_STARTED).length;
-    const inPlace = req.items.filter(i =>
-      [STATUS.IN_PLACE, STATUS.IN_PLACE_WITH_CCW, STATUS.NOT_APPLICABLE].includes(assessments[i.id]?.status)
+  // Get items for a given subsection (e.g., '1.1', '1.2', '1.3', '1.4')
+  const getSubsectionItems = useCallback((subsectionNumber) => {
+    return requirements.filter(r => !r.isParent && r.parentSection === subsectionNumber);
+  }, []);
+
+  // Get progress for a subsection
+  const getSubsectionProgress = useCallback((subsectionNumber) => {
+    const items = requirements.filter(r => !r.isParent && r.parentSection === subsectionNumber);
+    const total = items.length;
+    const assessed = items.filter(i => assessments[i.id]?.status !== STATUS.NOT_ASSESSED).length;
+    const inPlace = items.filter(i =>
+      [STATUS.IN_PLACE, STATUS.NOT_APPLICABLE].includes(assessments[i.id]?.status)
     ).length;
-    const notInPlace = req.items.filter(i => assessments[i.id]?.status === STATUS.NOT_IN_PLACE).length;
+    const notInPlace = items.filter(i => assessments[i.id]?.status === STATUS.NOT_IN_PLACE).length;
     return { total, assessed, inPlace, notInPlace, pct: total ? Math.round((assessed / total) * 100) : 0 };
   }, [assessments]);
 
   const getOverallProgress = useCallback(() => {
-    let total = 0, assessed = 0, inPlace = 0, notInPlace = 0;
-    requirements.forEach(req => {
-      const p = getRequirementProgress(req.id);
-      total += p.total;
-      assessed += p.assessed;
-      inPlace += p.inPlace;
-      notInPlace += p.notInPlace;
-    });
+    const items = requirements.filter(r => !r.isParent);
+    const total = items.length;
+    const assessed = items.filter(i => assessments[i.id]?.status !== STATUS.NOT_ASSESSED).length;
+    const inPlace = items.filter(i =>
+      [STATUS.IN_PLACE, STATUS.NOT_APPLICABLE].includes(assessments[i.id]?.status)
+    ).length;
+    const notInPlace = items.filter(i => assessments[i.id]?.status === STATUS.NOT_IN_PLACE).length;
     return { total, assessed, inPlace, notInPlace, pct: total ? Math.round((assessed / total) * 100) : 0 };
-  }, [getRequirementProgress]);
+  }, [assessments]);
 
   const resetAssessment = useCallback(() => {
-    setAssessments(buildInitialState());
-    setEntityName('');
-    setAssessorName('');
+    if (window.confirm('Reset all assessment progress? This cannot be undone.')) {
+      setAssessments(buildInitialState());
+      setEntityName('');
+      setAssessorName('');
+    }
   }, []);
 
   const exportAssessment = useCallback(() => {
     const data = {
+      version: 'pci-dss-v2.0-roc',
       entityName,
       assessorName,
       exportDate: new Date().toISOString(),
       assessments,
       summary: {
         overall: getOverallProgress(),
-        byRequirement: requirements.map(r => ({
-          id: r.id,
-          title: r.title,
-          ...getRequirementProgress(r.id),
+        bySubsection: REQUIREMENT_SECTIONS[0].subsections.map(s => ({
+          id: s.id,
+          number: s.number,
+          title: s.title,
+          ...getSubsectionProgress(s.number),
         })),
       },
     };
@@ -117,10 +123,10 @@ export function useAssessment() {
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
     a.href = url;
-    a.download = `pci-dss-assessment-${new Date().toISOString().split('T')[0]}.json`;
+    a.download = `pci-dss-v2-roc-assessment-${new Date().toISOString().split('T')[0]}.json`;
     a.click();
     URL.revokeObjectURL(url);
-  }, [assessments, entityName, assessorName, getOverallProgress, getRequirementProgress]);
+  }, [assessments, entityName, assessorName, getOverallProgress, getSubsectionProgress]);
 
   const importAssessment = useCallback((jsonData) => {
     try {
@@ -134,12 +140,29 @@ export function useAssessment() {
     }
   }, []);
 
+  // Search function
+  const searchRequirements = useCallback((query) => {
+    if (!query || query.trim().length < 2) return [];
+    const terms = query.toLowerCase().trim().split(/\\s+/);
+    return requirements.filter(r => !r.isParent).filter(req => {
+      const searchableText = [
+        req.section,
+        req.requirement,
+        req.testingProcedure,
+        ...(req.rocDetails || []),
+        ...(req.tags || [])
+      ].join(' ').toLowerCase();
+      return terms.every(term => searchableText.includes(term));
+    });
+  }, []);
+
   return {
     assessments,
     entityName, setEntityName,
     assessorName, setAssessorName,
     setItemStatus, setItemNotes, setItemEvidence,
-    getRequirementProgress, getOverallProgress,
+    getSubsectionItems, getSubsectionProgress, getOverallProgress,
     resetAssessment, exportAssessment, importAssessment,
+    searchRequirements,
   };
 }
